@@ -1,37 +1,24 @@
-.model small
-
-
-.stack
+.model small 
+.stack 
 .data
-  
-;declarando variables globales
-numero1 db 0
-numero2 db 0
-
-suma db 0
-resta db 0
-multiplicacion db 0
-division db 0
-modulo db 0
-
-cadena1 db  "Ingrese el primer numero= $";ingrese n1
-cadena2 db  "Ingrese el segundo numero= $";ingrese n2
-
-;mensaje para mostrar los resultados
- 
-msjnS db  "La suma es= $"
-msjnR db  "La resta= $"
-msjnM db  "La Multiplicacion es= $"
-msjnD db  "La division es = $"
-msjnMod db  "El modulo es = $"
-
-.code
+    cadena1 db  "Ingrese el primer numero= $";ingrese n1
+    cadena2 db  "Ingrese el segundo numero= $";ingrese n2
+    cadenaS DB 'RESULTADO SUMA: $'; $ significa el final de la cadena 
+    cadenaR DB 'RESULTADO DIFERENCIA: $'; 
+    cadenaM DB 'RESULTADO MULTIPLICACION: $'; 
+    cadenaC DB 'COCIENTE: $'; 
+    cadenaD DB 'RESIDUO: $'; 
+    num1 db 34h
+    num2 db 32h
+    cociente db ? 
+    residuo db ? 
+.code 
 programa: 
+    MOV AX, @DATA
+    MOV DS, AX
     
-    ;direccionamiento del procedimiento
-    mov ax, @data
-    mov ds,ax
-    
+    XOR AX, AX    
+
     ;solicitar del teclado numero 1
     
     mov ah, 09
@@ -39,99 +26,178 @@ programa:
     int 21h
     mov ah, 01
     int 21h
-    sub al, 30h
-    mov numero1,al
+    ;sub al, 30h
+    mov num1,al
     
-    ;solicitar del teclado numero 2
+        ; imprimir un salto de linea antes de mostrar un resultado
+    MOV DL, 10
+    MOV AH, 02
+    INT 21h
+    MOV DL, 13
+    INT 21H
+    XOR AX, AX
+    
+;solicitar del teclado numero 2
     
     mov ah, 09
     lea dx, cadena2
     int 21h
     mov ah, 01
     int 21h
-    sub al, 30h
-    mov numero2,al
+    ;sub al, 30h
+    mov num2,al
     
-    ;operaciones aritmeticas
-                  
-    ;SUMA             
-    mov al,numero1
-    add al,numero2
-    mov suma,al  
+        ; imprimir un salto de linea antes de mostrar un resultado
+    MOV DL, 10
+    MOV AH, 02
+    INT 21h
+    MOV DL, 13
+    INT 21H
+    XOR AX, AX
+        
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;IMPRIMIR CADENA
+    MOV DX, OFFSET cadenaS 
+    MOV AH, 09h 
+    INT 21h 
+    
+    XOR AX, AX
+    
+    ;SUMA
+    MOV AL, num1
+    ADD AL, num2
+    
+    ;IMPRIMIR SUMA
+    sub AL, 30h 
+    MOV DL, AL
+    
+    MOV AH, 02 
+    INT 21H 
+    
+    XOR AX, AX 
+    
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; imprimir un salto de linea antes de mostrar un resultado
+    MOV DL, 10
+    MOV AH, 02
+    INT 21h
+    MOV DL, 13
+    INT 21H
+    XOR AX, AX 
+    
+    ;IMPRIMIR CADENA
+    MOV DX, OFFSET cadenaR
+    MOV AH, 09h 
+    INT 21h 
+    
+    XOR AX, AX
     
     ;RESTA
-    mov al,numero1
-    sub al,numero2
-    mov resta,al
+    MOV AL, num1 
+    SUB AL, num2 
     
-    ;MULTIPLICACION
-    mov al,numero1
-    mul numero2
-    mov multiplicacion,al
+    ;IMPRIMIR RESTA
+    ADD AL, 30H
+    MOV DL, AL 
+    MOV AH, 02
+    INT 21H
+    
+    XOR AX, AX 
+    
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; imprimir un salto de linea antes de mostrar un resultado
+    MOV DL, 10
+    MOV AH, 02
+    INT 21h
+    MOV DL, 13
+    INT 21H
+    XOR AX, AX 
+    
+    ;IMPRIMIR CADENA
+    MOV DX, OFFSET cadenaM
+    MOV AH, 09h 
+    INT 21h 
+    
+    XOR AX, AX
+    
+    ;MULTIPLICACION 
+    MOV AL, num1 
+    SUB AL, 30H
+    MOV BL, num2
+    SUB BL, 30H
+    MUL BL
+    
+    ;IMPRIMIR MULTIPLICACION     
+    MOV DL, AL
+    ADD DL, 30H
+    MOV AH, 02
+    INT 21H
+    
+    XOR AX, AX
+    
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; imprimir un salto de linea antes de mostrar un resultado
+    MOV DL, 10
+    MOV AH, 02
+    INT 21h
+    MOV DL, 13
+    INT 21H
+    XOR AX, AX 
+    
+    ;IMPRIMIR CADENA
+    MOV DX, OFFSET cadenaC
+    MOV AH, 09h 
+    INT 21h 
+    
+    XOR AX, AX
     
     ;DIVISION
-    mov al,numero1
-    div numero2
-    mov division,al
+    MOV AL, num1 
+    SUB AL, 30H
+    MOV BL, num2
+    SUB BL, 30H
+    DIV BL 
+    MOV cociente, AL
+    MOV residuo, AH
     
-    ;MODULO
-    mov al, numero1
-    div numero2
-    mov modulo,ah 
-       
-    ;Mostrar los mensajes de los resultados 
+    ;IMPRIMIR COCIENTE
+    MOV DL, cociente 
+    ADD DL, 30H 
+    MOV AH, 02
+    INT 21H 
     
-    ;mostrando la suma
-    mov ah,09
-    lea dx,msjnS
-    int 21h
-    mov dl,suma
-    add dl,30h 
-    mov ah,02
-    int 21h  
+    XOR AX, AX 
     
-    ;mostrando la resta
-    mov ah,09
-    lea dx,msjnR
-    int 21h
-    mov dl,resta
-    add dl,30h 
-    mov ah,02
-    int 21h
+    ; imprimir un salto de linea antes de mostrar un resultado
+    MOV DL, 10
+    MOV AH, 02
+    INT 21h
+    MOV DL, 13
+    INT 21H
+    XOR AX, AX 
     
-    ;mostrando la multiplicacion
-    mov ah,09
-    lea dx,msjnM
-    int 21h
-    mov dl,multiplicacion
-    add dl,30h 
-    mov ah,02
-    int 21h
+    ;IMPRIMIR CADENA
+    MOV DX, OFFSET cadenaD
+    MOV AH, 09h 
+    INT 21h 
     
-    ;mostrando la division
-    mov ah,09
-    lea dx,msjnD
-    int 21h
-    mov dl,division
-    add dl,30h 
-    mov ah,02
-    int 21h
-                
-    ;mostrando el modulo     
-    mov ah,09
-    lea dx,msjnMod
-    int 21h
-    mov dl,modulo
-    add dl,30h 
-    mov ah,02
-    int 21h
-  
-    ;cierre del programa
-    mov ah,4ch
-    int 21h
+    XOR AX, AX
+    
+    ;IMPRIMIR RESIDUO
+    MOV DL, residuo 
+    ADD DL, 30H 
+    MOV AH, 02
+    INT 21H 
+    
+    XOR AX, AX
     
     
-end programa
     
     
-  
+    ;finalizar el programa
+    MOV AH, 4CH 
+    INT 21H
+END programa
+    
+    
